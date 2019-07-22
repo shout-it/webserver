@@ -1,0 +1,16 @@
+#!/bin/bash
+go test
+STATUS=$?
+if [ $STATUS -eq 0 ]
+then
+   COVERAGE=$(go test -cover | grep coverage | cut -d ' ' -f 2 | cut -d '.' -f 1)
+   if [ $COVERAGE -ge 90 ]
+   then
+     exit 0
+   else
+     echo "Test coverage is below 90. Please make sure test coverate is above 90."
+   fi
+else
+   echo "Tests are failing. Please make sure tests are passing."
+fi
+exit 1
