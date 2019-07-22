@@ -2,8 +2,8 @@
 Web server for shoutit web blogger
 
 # Dependencies
-go - 1.10+
-govendor(https://devcenter.heroku.com/articles/go-dependencies-via-govendor)
+1. go - 1.10+
+2. govendor(https://devcenter.heroku.com/articles/go-dependencies-via-govendor)
 
 # How to run the application
 
