@@ -1,12 +1,16 @@
 package main
 
 import (
+   "github.com/dgrijalva/jwt-go"
    "github.com/gin-gonic/gin"
    "log"
+   "time"
    "webserver/dao"
    "webserver/models"
    "golang.org/x/crypto/bcrypt"
 )
+var jwtKey = []byte("aa9060d3-b56d-4c52-b81e-2edb06ed6697")
+
 func main() {
    router := SetupRouter()
    router.Run()
@@ -25,6 +29,7 @@ func SetupRouter() *gin.Engine {
       }
       c.JSON(200, gin.H{"status": "Ok"})
    })
+
    router.POST("/login", func(c *gin.Context) {
       var credentials models.Credentials
       c.BindJSON(&credentials)
@@ -34,7 +39,19 @@ func SetupRouter() *gin.Engine {
       } else {
          matched := comparePasswords(user.Password,[]byte(credentials.Password))
          if matched {
-            c.JSON(200,gin.H{"result":"Authentication Successfull"})
+            expirationTime := time.Now().Add(5*time.Minute);
+            claims := &models.Claims {
+               Email: credentials.Email,
+               StandardClaims: jwt.StandardClaims{
+                  ExpiresAt:expirationTime.Unix(),
+               },
+            }
+            token := jwt.NewWithClaims(jwt.SigningMethodES256,claims)
+            tokenString,err := token.SigningString()
+            if err != nil {
+               c.JSON(500,gin.H{"Error":err})
+            }
+            c.SetCookie("token",tokenString,int(expirationTime.Unix()),"","",false,false)
          } else {
             c.JSON(403,gin.H{"result":"Failed to Authenticate"})
          }
