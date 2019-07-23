@@ -4,6 +4,7 @@ package dao
 import (
 	"context"
 	"github.com/mongodb/mongo-go-driver/mongo"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/x/bsonx"
 	"log"
@@ -44,4 +45,17 @@ func InsertOneValue(user models.User) error {
 		return err
 	}
 	return nil
+}
+
+func FindBy(email string) (models.User,error){
+	log.Printf(email,"hi")
+	var user models.User
+	filter := bson.D{{
+		"email",email,
+	}}
+	err := db.Collection(COLLECTIONNAME).FindOne(context.Background(),filter).Decode(&user)
+	if err != nil {
+		return models.User{},err
+	}
+	return user,nil
 }
