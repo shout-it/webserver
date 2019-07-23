@@ -1,7 +1,9 @@
 package main
+
 import (
-   "net/http"
    "github.com/gin-gonic/gin"
+   "webserver/dao"
+   "webserver/models"
 )
 func main() {
    router := SetupRouter()
@@ -9,11 +11,11 @@ func main() {
 }
 func SetupRouter() *gin.Engine {
    router := gin.Default()
-   router.GET("/", func(c *gin.Context) {
-      c.JSON(http.StatusOK, gin.H{
-          "hello": "world",
-      })
+   router.POST("/signup", func(c *gin.Context) {
+      var user models.User
+      c.BindJSON(&user)
+      dao.InsertOneValue(user)
+      c.JSON(200, gin.H{"status": "Ok"})
    })
-   
    return router
 }
