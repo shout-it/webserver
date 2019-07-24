@@ -1,0 +1,6 @@
+appname: "shoutit"
+port: 8080
+mongo:
+    host: "mongodb://localhost:27017"
+    database: "shoutit"
+

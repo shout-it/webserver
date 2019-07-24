@@ -2,34 +2,16 @@ package handlers
 
 import (
 	"github.com/gin-gonic/gin"
-	"log"
-	"net/http"
 	"time"
 	"webserver/dao"
 	"webserver/helpers"
 	"webserver/models"
 )
 
-func WithAuth(adapter func(c *gin.Context)) func(c *gin.Context){
-	return func(c *gin.Context) {
-		tokenString,err := c.Cookie("token")
-		if err != nil {
-			c.String(http.StatusUnauthorized,"You are not allowed to access this")
-			return
-		}
-		parsedToken,err := helpers.ParseTokenFromSignedTokenString(tokenString)
-		if err != nil {
-			log.Print(err,"hello")
-			c.String(http.StatusUnauthorized,"You are not allowed to access this")
-			return
-		}
-		c.Set("userInfo",parsedToken)
-		adapter(c)
-	}
-}
 
-func StoryHadler(c *gin.Context) {
-	c.JSON(200,"Stories")
+func WelcomeHandler(c *gin.Context) {
+	value,_ := c.Get("claims")
+	c.JSON(200,gin.H{"Claims":value})
 	return
 }
 
