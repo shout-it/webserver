@@ -16,5 +16,3 @@ func main() {
    }
    router.Run(":" + strconv.Itoa(config.Port))
 }
-
-

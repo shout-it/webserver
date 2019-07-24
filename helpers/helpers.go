@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	. "webserver/constants"
 	"webserver/models"
 )
 
@@ -30,7 +31,7 @@ func ComparePasswords(hashedPwd string, plainPwd []byte) bool {
 
 func CreateSignedTokenStringFor(expirationTime int64,credentials models.Credentials) (string,error) {
 	pwd, _ := os.Getwd()
-	privateKey, err := ioutil.ReadFile(pwd+"/helpers/certificates/jwtRS256.key")
+	privateKey, err := ioutil.ReadFile(pwd+PrivateKeyPath)
 	if err != nil {
 		return "",err
 	}
@@ -55,7 +56,7 @@ func CreateSignedTokenStringFor(expirationTime int64,credentials models.Credenti
 
 func ParseTokenFromSignedTokenString(tokenString string) (*jwt.Token,error){
 	pwd, _ := os.Getwd()
-	publicKey,err := ioutil.ReadFile(pwd+"/helpers/certificates/jwtRS256.key.pub")
+	publicKey,err := ioutil.ReadFile(pwd+PublicKeyPath)
 	if err != nil {
 		return nil,err
 	}

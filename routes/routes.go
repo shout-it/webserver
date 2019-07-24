@@ -3,6 +3,7 @@ package routes
 import (
 	"github.com/gin-gonic/gin"
 	. "webserver/adapters"
+	. "webserver/constants"
 	. "webserver/handlers"
 )
 
@@ -15,18 +16,18 @@ type RouteConfig struct {
 func GetAllRoutes() []RouteConfig{
 	return []RouteConfig {
 		{
-			Method:"POST",
-			Path:"/signin",
+			Method:HttpPostMethod,
+			Path:SignInPathName,
 			Handler:SignInHandler,
 		},
 		{
-			Method:"POST",
-			Path:"/signup",
+			Method:HttpPostMethod,
+			Path:SignUpPathName,
 			Handler:SignUpHandler,
 		},
 		{
-			Method:"POST",
-			Path:"/welcome",
+			Method:HttpGetMethod,
+			Path:WelcomePathName,
 			Handler:WithAuth(WelcomeHandler),
 		},
 	}

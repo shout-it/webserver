@@ -10,9 +10,9 @@ import (
 	"go.mongodb.org/mongo-driver/x/bsonx"
 	"log"
 	"webserver/config"
+	. "webserver/constants"
 	"webserver/models"
 )
-const CollectionName = "users"
 
 var db *mongo.Database;
 
@@ -32,7 +32,7 @@ func init() {
 		Options:options.Index().SetUnique(true),
 	}
 
-	_,err = db.Collection(CollectionName).Indexes().CreateOne(context.Background(),index,)
+	_,err = db.Collection(UsersCollectionName).Indexes().CreateOne(context.Background(),index,)
 	if err != nil {
 		log.Println(err)
 	}
@@ -41,7 +41,7 @@ func init() {
 func InsertOneValue(user models.User) error {
 	uid,err := uuid.NewV4()
 	user.Id = uid.String()
-	_, err = db.Collection(CollectionName).InsertOne(context.Background(), user)
+	_, err = db.Collection(UsersCollectionName).InsertOne(context.Background(), user)
 	if err != nil {
 		return err
 	}
@@ -53,7 +53,7 @@ func FindBy(email string) (models.User,error){
 	filter := bson.D{{
 		"email",email,
 	}}
-	err := db.Collection(CollectionName).FindOne(context.Background(),filter).Decode(&user)
+	err := db.Collection(UsersCollectionName).FindOne(context.Background(),filter).Decode(&user)
 	if err != nil {
 		return models.User{},err
 	}

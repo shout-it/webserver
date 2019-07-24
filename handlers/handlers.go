@@ -3,6 +3,7 @@ package handlers
 import (
 	"github.com/gin-gonic/gin"
 	"time"
+	. "webserver/constants"
 	"webserver/dao"
 	"webserver/helpers"
 	"webserver/models"
@@ -41,7 +42,7 @@ func SignInHandler(c *gin.Context) {
 			if err != nil {
 				c.JSON(500,gin.H{"Error": err})
 			}
-			c.SetCookie("token",tokenString,int(expirationTime.Unix()),"","",false,false)
+			c.SetCookie(AuthTokenName,tokenString,int(expirationTime.Unix()),"","",false,false)
 		} else {
 			c.JSON(403,gin.H{"result":"Failed to Authenticate"})
 		}
