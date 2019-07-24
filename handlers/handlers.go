@@ -12,7 +12,6 @@ import (
 func WelcomeHandler(c *gin.Context) {
 	value,_ := c.Get("claims")
 	c.JSON(200,gin.H{"Claims":value})
-	return
 }
 
 func SignUpHandler(c *gin.Context) {

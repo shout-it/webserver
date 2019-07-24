@@ -2,7 +2,6 @@ package adapters
 
 import (
 	"github.com/gin-gonic/gin"
-	"log"
 	"net/http"
 	"webserver/helpers"
 )
@@ -16,7 +15,6 @@ func WithAuth(handler func(c *gin.Context)) func(c *gin.Context){
 		}
 		parsedToken,err := helpers.ParseTokenFromSignedTokenString(tokenString)
 		if err != nil {
-			log.Print(err,"hello")
 			c.String(http.StatusUnauthorized,"You are not allowed to access this")
 			return
 		}

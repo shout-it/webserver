@@ -24,14 +24,14 @@ func init() {
 	if err != nil {
 		log.Printf("error reading config file")
 	}
-	appConfig = CreateConfig();
+	appConfig = CreateAppConfig();
 }
 
 func GetConfig() *AppConfig {
 	return appConfig
 }
 
-func CreateConfig() *AppConfig{
+func CreateAppConfig() *AppConfig{
 	config := new(AppConfig)
 	config.AppName = viper.GetString("appName")
 	config.Port = viper.GetInt("port")
