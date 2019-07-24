@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"github.com/gin-gonic/gin"
+	"net/http"
 	"time"
 	. "webserver/constants"
 	"webserver/dao"
@@ -9,10 +10,9 @@ import (
 	"webserver/models"
 )
 
-
 func WelcomeHandler(c *gin.Context) {
 	value,_ := c.Get("claims")
-	c.JSON(200,gin.H{"Claims":value})
+	c.JSON(http.StatusOK,gin.H{"Claims":value})
 }
 
 func SignUpHandler(c *gin.Context) {
@@ -23,9 +23,11 @@ func SignUpHandler(c *gin.Context) {
 	user.Password = hashedPassword
 	err := dao.InsertOneValue(user)
 	if err != nil {
-		c.JSON(500,gin.H {"Error": err})
+		c.JSON(http.StatusInternalServerError,err)
+		return
 	}
-	c.JSON(200, gin.H{"status": "Ok"})
+	c.JSON(http.StatusOK, "Created the resource")
+	return
 }
 
 func SignInHandler(c *gin.Context) {
@@ -33,19 +35,21 @@ func SignInHandler(c *gin.Context) {
 	c.BindJSON(&credentials)
 	user,err := dao.FindBy(credentials.Email)
 	if err != nil {
-		c.JSON(500,gin.H{"Error": "Could not find Email"})
-	} else {
-		matched := helpers.ComparePasswords(user.Password,[]byte(credentials.Password))
-		if matched {
-			expirationTime := time.Now().Add(5*time.Minute);
-			tokenString,err := helpers.CreateSignedTokenStringFor(expirationTime.Unix(),credentials)
-			if err != nil {
-				c.JSON(500,gin.H{"Error": err})
-			}
-			c.SetCookie(AuthTokenName,tokenString,int(expirationTime.Unix()),"","",false,false)
-		} else {
-			c.JSON(403,gin.H{"result":"Failed to Authenticate"})
-		}
+		c.JSON(404,"Could not find Email")
+		return
 	}
+	matched := helpers.ComparePasswords(user.Password,[]byte(credentials.Password))
+	if matched {
+		expirationTime := time.Now().Add(5*time.Minute);
+		tokenString,err := helpers.CreateSignedTokenStringFor(expirationTime.Unix(),credentials)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError,"Failed to generate signed token")
+			return
+		}
+		c.SetCookie(AuthTokenName,tokenString,int(expirationTime.Unix()),"","",false,false)
+		return
+	}
+	c.JSON(http.StatusUnauthorized,"Invalid Credentials")
+	return
 }
 
