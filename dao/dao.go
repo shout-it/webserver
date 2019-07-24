@@ -48,7 +48,6 @@ func InsertOneValue(user models.User) error {
 }
 
 func FindBy(email string) (models.User,error){
-	log.Printf(email,"hi")
 	var user models.User
 	filter := bson.D{{
 		"email",email,
